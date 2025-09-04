@@ -292,8 +292,8 @@
 									"\r",
 									"\r",
 									"pm.test(\"Error for missing Date\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Date\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Date\"][0]).to.equal(\"Date must be in the future.\");\r",
+									"    pm.expect(responseData.errors.Date.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Date[0]).to.equal(\"Date must be in the future.\");\r",
 									"});\r",
 									""
 								],
@@ -360,39 +360,39 @@
 									"\r",
 									"\r",
 									"pm.test(\"Error for missing Title\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Title\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Title\"][0]).to.equal(\"Title is required.\");\r",
+									"    pm.expect(responseData.errors.Title.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Title[0]).to.equal(\"Title is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing Artist\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Artist\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Artist\"][0]).to.equal(\"Artist is required.\");\r",
+									"    pm.expect(responseData.errors.Artist.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Artist[0]).to.equal(\"Artist is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing Date\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Date\"].length).to.equal(2);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Date\"][0]).to.equal(\"Date is required.\");\r",
-									"    pm.expect(responseData.errors[\"gigDto.Date\"][1]).to.equal(\"Date must be in the future.\");\r",
+									"    pm.expect(responseData.errors.Date.length).to.equal(2);\r",
+									"    pm.expect(responseData.errors.Date[0]).to.equal(\"Date is required.\");\r",
+									"    pm.expect(responseData.errors.Date[1]).to.equal(\"Date must be in the future.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing Description\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Description\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Description\"][0]).to.equal(\"Description is required.\");\r",
+									"    pm.expect(responseData.errors.Description.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Description[0]).to.equal(\"Description is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing Category\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Category\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Category\"][0]).to.equal(\"Category is required.\");\r",
+									"    pm.expect(responseData.errors.Category.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Category[0]).to.equal(\"Category is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing City\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.City\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.City\"][0]).to.equal(\"City is required.\");\r",
+									"    pm.expect(responseData.errors.City.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.City[0]).to.equal(\"City is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing Venue\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Venue\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Venue\"][0]).to.equal(\"Venue is required.\");\r",
+									"    pm.expect(responseData.errors.Venue.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Venue[0]).to.equal(\"Venue is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"There are no unexpected errors\", function () {\r",
@@ -426,6 +426,76 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gig creation validates latitude and longitude if provided",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(400);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for invalid latitude\", function () {\r",
+									"    pm.expect(responseData.errors[\"gigDto.Latitude\"].length).to.equal(1);\r",
+									"    pm.expect(responseData.errors[\"gigDto.Latitude\"][0]).to.equal(\"Latitude must be between -90 and 90.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for invalid longitude\", function () {\r",
+									"    pm.expect(responseData.errors[\"gigDto.Latitude\"].length).to.equal(1);\r",
+									"    pm.expect(responseData.errors[\"gigDto.Latitude\"][0]).to.equal(\"Longitude must be between -180 and 180.\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment= require('moment');\r",
+									"let futureDate = moment().add(7, 'days').hour(19).minute(30).second(0);\r",
+									"\r",
+									"\r",
+									"let isoString = futureDate.toISOString();\r",
+									"\r",
+									"pm.environment.set(\"futureDate\", isoString);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"category\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 91.5237629,\r\n    \"longitude\": -181.1584743\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -643,6 +713,182 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Edit a gig with incorrect Id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"updatedTitle\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedDescription\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedArtist\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedCity\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedVenue\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedCategory\", \"NewGig Updated\");\r",
+									"\r",
+									"const moment= require('moment');\r",
+									"let futureDate = moment().add(8, 'days').hour(19).minute(30).second(0);\r",
+									"let isoString = futureDate.toISOString();\r",
+									"pm.environment.set(\"updatedFutureDate\", isoString);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(404);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{$guid}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"category\": \"{{updatedCategory}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editing a gig requires all mandatory fields",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"updatedTitle\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedDescription\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedArtist\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedCity\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedVenue\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedCategory\", \"NewGig Updated\");\r",
+									"\r",
+									"const moment= require('moment');\r",
+									"let futureDate = moment().add(8, 'days').hour(19).minute(30).second(0);\r",
+									"let isoString = futureDate.toISOString();\r",
+									"pm.environment.set(\"updatedFutureDate\", isoString);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const responseData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(400);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"pm.test(\"Error for missing Title\", function () {\r",
+									"    pm.expect(responseData.errors.Title.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Title[0]).to.equal(\"Title is required.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing Artist\", function () {\r",
+									"    pm.expect(responseData.errors.Artist.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Artist[0]).to.equal(\"Artist is required.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing Date\", function () {\r",
+									"    pm.expect(responseData.errors.Date.length).to.equal(2);\r",
+									"    pm.expect(responseData.errors.Date[0]).to.equal(\"Date is required.\");\r",
+									"    pm.expect(responseData.errors.Date[1]).to.equal(\"Date must be in the future.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing Description\", function () {\r",
+									"    pm.expect(responseData.errors.Description.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Description[0]).to.equal(\"Description is required.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing Category\", function () {\r",
+									"    pm.expect(responseData.errors.Category.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Category[0]).to.equal(\"Category is required.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing City\", function () {\r",
+									"    pm.expect(responseData.errors.City.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.City[0]).to.equal(\"City is required.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing Venue\", function () {\r",
+									"    pm.expect(responseData.errors.Venue.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Venue[0]).to.equal(\"Venue is required.\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Error for missing Id\", function () {\r",
+									"    pm.expect(responseData.errors[\"GigDto.Id\"].length).to.equal(1);\r",
+									"    pm.expect(responseData.errors[\"GigDto.Id\"][0]).to.equal(\"Gig ID is required.\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"There are no unexpected errors\", function () {\r",
+									"    pm.expect(Object.keys(responseData.errors).length).to.equal(8);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								""
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -749,12 +995,370 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Delete a non-existing gig",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 400\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/{{newGigId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								"{{newGigId}}"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
 		{
 			"name": "User journey",
-			"item": []
+			"item": [
+				{
+					"name": "Create gig",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"newGigId\", pm.response.text())\r",
+									"\r",
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const moment= require('moment');\r",
+									"let futureDate = moment().add(7, 'days').hour(19).minute(30).second(0);\r",
+									"\r",
+									"\r",
+									"let isoString = futureDate.toISOString();\r",
+									"\r",
+									"pm.environment.set(\"futureDate\", isoString);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"category\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gig appears in the list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"const responseData = pm.response.json();\r",
+									"    \r",
+									"\r",
+									"pm.test(\"Response has the required fields\", function () {\r",
+									"let foundGigs = responseData.filter(x => x.id === pm.environment.get(\"newGigId\"))\r",
+									"    pm.expect(foundGigs.length).to.eql(1);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get gig detail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/{{newGigId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								"{{newGigId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Gig",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"updatedTitle\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedDescription\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedArtist\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedCity\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedVenue\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedCategory\", \"NewGig Updated\");\r",
+									"\r",
+									"const moment= require('moment');\r",
+									"let futureDate = moment().add(8, 'days').hour(19).minute(30).second(0);\r",
+									"let isoString = futureDate.toISOString();\r",
+									"pm.environment.set(\"updatedFutureDate\", isoString);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.equal(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"{{newGigId}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"category\": \"{{updatedCategory}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Updated gig appears in the list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"const responseData = pm.response.json();\r",
+									"    \r",
+									"\r",
+									"pm.test(\"Updated gig is in the list\", function () {\r",
+									"let foundGigs = responseData.filter(x => x.id === pm.environment.get(\"newGigId\"))\r",
+									"    pm.expect(foundGigs.length).to.eql(1);\r",
+									"    pm.expect(foundGigs[0].title).to.eql(pm.environment.get(\"updatedTitle\"))\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete the gig",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs/{{newGigId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs",
+								"{{newGigId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleted gig is removed from the list",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Response status code is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"const responseData = pm.response.json();\r",
+									"    \r",
+									"\r",
+									"pm.test(\"Updated gig is in the list\", function () {\r",
+									"let foundGigs = responseData.filter(x => x.id === pm.environment.get(\"newGigId\"))\r",
+									"    pm.expect(foundGigs.length).to.eql(0);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/gigs",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"gigs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }
