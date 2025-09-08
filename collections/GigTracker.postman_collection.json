@@ -26,7 +26,7 @@
 									"\r",
 									"pm.test(\"Response has the required fields\", function () {\r",
 									"    responseData.forEach(function(item) {\r",
-									"        pm.expect(item).to.have.all.keys('id', 'title','artist', 'date', 'description', 'category', 'city', 'isCancelled', 'venue', 'latitude', 'longitude');\r",
+									"        pm.expect(item).to.have.all.keys('id', 'title','artist', 'date', 'description', 'genre', 'city', 'isCancelled', 'venue', 'latitude', 'longitude');\r",
 									"    });\r",
 									"});\r",
 									"\r",
@@ -127,7 +127,7 @@
 									"\r",
 									"pm.test(\"Response has the required fields\", function () {\r",
 									"    const responseData = pm.response.json();\r",
-									"    pm.expect(responseData).to.have.all.keys('id', 'title', 'artist', 'date', 'description', 'category', 'city', 'isCancelled', 'venue', 'latitude', 'longitude');\r",
+									"    pm.expect(responseData).to.have.all.keys('id', 'title', 'artist', 'date', 'description', 'genre', 'city', 'isCancelled', 'venue', 'latitude', 'longitude');\r",
 									"});\r",
 									"\r",
 									"pm.test(\"The id must be the requestedId\", function () {\r",
@@ -140,8 +140,9 @@
 									"pm.test(\"Date is in a valid date format\", function () {\r",
 									"    const responseData = pm.response.json();\r",
 									"    pm.expect(responseData.date).to.exist;\r",
-									"    pm.expect(responseData.date).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$/, \"Date should be in 'YYYY-MM-DDTHH:mm:ss' format\");\r",
-									"\r",
+									"    const iso8601Regex = /^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(\\.\\d+)?$/;\r",
+									"    pm.expect(responseData.date).to.exist;\r",
+									"    pm.expect(responseData.date).to.match(iso8601Regex);\r",
 									"});\r",
 									"\r",
 									""
@@ -256,7 +257,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"category\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
+							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"genre\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -323,7 +324,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{currentTime}}\",\r\n    \"description\": \"Activity description\",\r\n    \"category\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
+							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{currentTime}}\",\r\n    \"description\": \"Activity description\",\r\n    \"genre\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -380,9 +381,9 @@
 									"    pm.expect(responseData.errors.Description[0]).to.equal(\"Description is required.\");\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Error for missing Category\", function () {\r",
-									"    pm.expect(responseData.errors.Category.length).to.equal(1);\r",
-									"    pm.expect(responseData.errors.Category[0]).to.equal(\"Category is required.\");\r",
+									"pm.test(\"Error for missing genre\", function () {\r",
+									"    pm.expect(responseData.errors.Genre.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Genre[0]).to.equal(\"Genre is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing City\", function () {\r",
@@ -460,13 +461,13 @@
 									"});\r",
 									"\r",
 									"pm.test(\"Error for invalid latitude\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Latitude\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Latitude\"][0]).to.equal(\"Latitude must be between -90 and 90.\");\r",
+									"    pm.expect(responseData.errors.Latitude.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Latitude[0]).to.equal(\"Latitude must be between -90 and 90.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for invalid longitude\", function () {\r",
-									"    pm.expect(responseData.errors[\"gigDto.Latitude\"].length).to.equal(1);\r",
-									"    pm.expect(responseData.errors[\"gigDto.Latitude\"][0]).to.equal(\"Longitude must be between -180 and 180.\");\r",
+									"    pm.expect(responseData.errors.Longitude.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Longitude[0]).to.equal(\"Longitude must be between -180 and 180.\");\r",
 									"});"
 								],
 								"type": "text/javascript",
@@ -495,7 +496,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"category\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 91.5237629,\r\n    \"longitude\": -181.1584743\r\n}",
+							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"Genre\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 91.5237629,\r\n    \"longitude\": -181.1584743\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -555,7 +556,7 @@
 									"pm.environment.set(\"Artist\", \"NewGig\");\r",
 									"pm.environment.set(\"City\", \"NewGig\");\r",
 									"pm.environment.set(\"Venue\", \"NewGig\");\r",
-									"pm.environment.set(\"Category\", \"NewGig\");"
+									"pm.environment.set(\"Genre\", \"NewGig\");"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -567,7 +568,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"{{Title}}\",\r\n    \"artist\": \"{{Artist}}\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"{{Description}}\",\r\n    \"category\": \"{{Category}}\",\r\n    \"city\": \"{{City}}\",\r\n    \"venue\": \"{{Venue}}\"\r\n}",
+							"raw": "{\r\n    \"title\": \"{{Title}}\",\r\n    \"artist\": \"{{Artist}}\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"{{Description}}\",\r\n    \"genre\": \"{{Genre}}\",\r\n    \"city\": \"{{City}}\",\r\n    \"venue\": \"{{Venue}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -600,7 +601,7 @@
 									"pm.environment.set(\"updatedArtist\", \"NewGig Updated\");\r",
 									"pm.environment.set(\"updatedCity\", \"NewGig Updated\");\r",
 									"pm.environment.set(\"updatedVenue\", \"NewGig Updated\");\r",
-									"pm.environment.set(\"updatedCategory\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedGenre\", \"NewGig Updated\");\r",
 									"\r",
 									"const moment= require('moment');\r",
 									"let futureDate = moment().add(8, 'days').hour(19).minute(30).second(0);\r",
@@ -630,7 +631,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{newGigId}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"category\": \"{{updatedCategory}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
+							"raw": "{\r\n    \"id\": \"{{newGigId}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"genre\": \"{{updatedGenre}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -681,8 +682,8 @@
 									"pm.test(\"Description is updated\", function () {\r",
 									"    pm.expect(responseData.description).to.eql(pm.environment.get(\"updatedDescription\"));\r",
 									"});\r",
-									"pm.test(\"Category is updated\", function () {\r",
-									"    pm.expect(responseData.category).to.eql(pm.environment.get(\"updatedCategory\"));\r",
+									"pm.test(\"Genre is updated\", function () {\r",
+									"    pm.expect(responseData.genre).to.eql(pm.environment.get(\"updatedGenre\"));\r",
 									"});\r",
 									"pm.test(\"City is updated\", function () {\r",
 									"    pm.expect(responseData.city).to.eql(pm.environment.get(\"updatedCity\"));\r",
@@ -756,7 +757,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{$guid}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"category\": \"{{updatedCategory}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
+							"raw": "{\r\n    \"id\": \"{{$guid}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"genre\": \"{{updatedGenre}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -834,9 +835,9 @@
 									"    pm.expect(responseData.errors.Description[0]).to.equal(\"Description is required.\");\r",
 									"});\r",
 									"\r",
-									"pm.test(\"Error for missing Category\", function () {\r",
-									"    pm.expect(responseData.errors.Category.length).to.equal(1);\r",
-									"    pm.expect(responseData.errors.Category[0]).to.equal(\"Category is required.\");\r",
+									"pm.test(\"Error for missing Genre\", function () {\r",
+									"    pm.expect(responseData.errors.Genre.length).to.equal(1);\r",
+									"    pm.expect(responseData.errors.Genre[0]).to.equal(\"Genre is required.\");\r",
 									"});\r",
 									"\r",
 									"pm.test(\"Error for missing City\", function () {\r",
@@ -929,7 +930,7 @@
 									"pm.environment.set(\"Artist\", \"NewGig\");\r",
 									"pm.environment.set(\"City\", \"NewGig\");\r",
 									"pm.environment.set(\"Venue\", \"NewGig\");\r",
-									"pm.environment.set(\"Category\", \"NewGig\");"
+									"pm.environment.set(\"Genre\", \"NewGig\");"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -941,7 +942,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"{{Title}}\",\r\n    \"artist\": \"{{Artist}}\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"{{Description}}\",\r\n    \"category\": \"{{Category}}\",\r\n    \"city\": \"{{City}}\",\r\n    \"venue\": \"{{Venue}}\"\r\n}",
+							"raw": "{\r\n    \"title\": \"{{Title}}\",\r\n    \"artist\": \"{{Artist}}\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"{{Description}}\",\r\n    \"genre\": \"{{Genre}}\",\r\n    \"city\": \"{{City}}\",\r\n    \"venue\": \"{{Venue}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1076,7 +1077,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"category\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
+							"raw": "{\r\n    \"title\": \"Example Title\",\r\n    \"artist\": \"Mastodon\",\r\n    \"date\": \"{{futureDate}}\",\r\n    \"description\": \"Activity description\",\r\n    \"genre\": \"Random category\",\r\n    \"city\": \"Place\",\r\n    \"isCancelled\": false,\r\n    \"venue\": \"Api Test Venue\",\r\n    \"latitude\": 51.5237629,\r\n    \"longitude\": -0.1584743\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1188,7 +1189,7 @@
 									"pm.environment.set(\"updatedArtist\", \"NewGig Updated\");\r",
 									"pm.environment.set(\"updatedCity\", \"NewGig Updated\");\r",
 									"pm.environment.set(\"updatedVenue\", \"NewGig Updated\");\r",
-									"pm.environment.set(\"updatedCategory\", \"NewGig Updated\");\r",
+									"pm.environment.set(\"updatedGenre\", \"NewGig Updated\");\r",
 									"\r",
 									"const moment= require('moment');\r",
 									"let futureDate = moment().add(8, 'days').hour(19).minute(30).second(0);\r",
@@ -1218,7 +1219,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"id\": \"{{newGigId}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"category\": \"{{updatedCategory}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
+							"raw": "{\r\n    \"id\": \"{{newGigId}}\",\r\n    \"title\": \"{{updatedTitle}}\",\r\n    \"artist\": \"{{updatedArtist}}\",\r\n    \"date\": \"{{updatedFutureDate}}\",\r\n    \"description\": \"{{updatedDescription}}\",\r\n    \"genre\": \"{{updatedGenre}}\",\r\n    \"city\": \"{{updatedCity}}\",\r\n    \"venue\": \"{{updatedVenue}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
